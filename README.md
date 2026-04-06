@@ -227,18 +227,13 @@
 ```text
 Xakaton/
 ├── data/
-│   ├── raw/              # полные исходные данные (локально, не коммитить)
-│   └── sample/           # небольшие sample-файлы для тестов и Codex
+│   └── raw/              # полные исходные данные (локально, не коммитить)
+│    
 │
 ├── notebooks/
+    ├── EDA_structured_test # тестовое структурирование - пока что мусор
 │   └── EDA.ipynb         # основной exploratory notebook
 │
-├── src/
-│   ├── data_loading.py
-│   ├── preprocessing.py
-│   ├── target_definition.py
-│   ├── feature_engineering.py
-│   └── train.py
 │
 ├── reports/
 │   ├── schema_audit.md

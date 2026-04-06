@@ -151,3 +151,8 @@
 - baseline только на safe features;
 - baseline + partial user-level features;
 - baseline + risky merges, если bridge будет восстановлен.
+
+
+## 11. Гипотеза проверить как наличие конкретных учителей на курсе сказывается на оттоке
+
+возможно дети уходят от конкретного учителя

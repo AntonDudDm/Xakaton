@@ -1,0 +1,490 @@
+from pathlib import Path
+
+
+# =============================================================================
+# Paths and constants
+# =============================================================================
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_RAW_DIR = PROJECT_ROOT / "data" / "raw"
+DATA_AGENT_DIR = PROJECT_ROOT / "data" / "AGENT"
+TABLES_DIR = DATA_AGENT_DIR / "tables"
+SUMMARIES_DIR = DATA_AGENT_DIR / "summaries"
+FIGURES_DIR = DATA_AGENT_DIR / "figures"
+NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
+
+CORE_ENTITY_KEY = "users_course_id"
+USER_KEY = "user_id"
+COURSE_KEY = "course_id"
+
+EXPORT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+
+# =============================================================================
+# Raw files
+# =============================================================================
+
+FILES = {
+    "users_courses": "users_courses.csv",
+    "users": "users.csv",
+    "lessons": "lessons.csv",
+    "lesson_tasks": "lesson_tasks.csv",
+    "trainings": "trainings.csv",
+    "user_lessons": "user_lessons.csv",
+    "user_trainings": "user_trainings.csv",
+    "user_answers": "user_answers.csv",
+    "wk_users_courses_actions": "wk_users_courses_actions.csv",
+    "wk_media_view_sessions": "wk_media_view_sessions.csv",
+    "user_access_histories": "user_access_histories.csv",
+    "user_award_badges": "user_award_badges.csv",
+    "award_badges": "award_badges.csv",
+    "groups": "groups.csv",
+    "homeworks": "homeworks.csv",
+    "homework_items": "homework_items.csv",
+    "stats__module_1": "stats__module_1.csv",
+    "stats__module_2": "stats__module_2.csv",
+    "stats__module_3": "stats__module_3.csv",
+    "stats__module_4": "stats__module_4.csv",
+}
+
+
+# =============================================================================
+# Working column selection
+# =============================================================================
+
+RAW_USECOLS_MAP = {
+    "users_courses": [
+        "id",
+        "user_id",
+        "course_id",
+        "state",
+        "created_at",
+        "updated_at",
+        "access_finished_at",
+        "wk_points",
+        "wk_max_points",
+        "wk_max_viewable_lessons",
+        "wk_max_task_count",
+        "wk_officially_started_at",
+        "wk_course_completed_at",
+    ],
+    "users": [
+        "id",
+        "created_at",
+        "updated_at",
+        "type",
+        "sign_in_count",
+        "subscribed",
+        "grade_id",
+        "timezone",
+        "grade_changed_at",
+        "d_wk_school_id",
+        "d_wk_municipal_id",
+        "d_wk_region_id",
+        "wk_gender",
+    ],
+    "lessons": [
+        "id",
+        "course_id",
+        "conspect_expected",
+        "task_expected",
+        "lesson_number",
+        "wk_max_points",
+        "wk_task_count",
+        "wk_survival_training_expected",
+        "wk_scratch_playground_enabled",
+        "wk_attendance_tracking_enabled",
+        "wk_video_duration",
+        "wk_attendance_tracking_disabled_at",
+    ],
+    "lesson_tasks": [
+        "id",
+        "lesson_id",
+        "task_id",
+        "position",
+        "task_required",
+    ],
+    "trainings": [
+        "id",
+        "name",
+        "difficulty",
+        "published_at",
+        "lesson_id",
+        "task_templates_count",
+    ],
+    "user_lessons": [
+        "user_id",
+        "lesson_id",
+        "video_visited",
+        "translation_visited",
+        "users_course_id",
+        "solved",
+        "solved_tasks_count",
+        "wk_points",
+        "video_viewed",
+        "wk_solved_task_count",
+    ],
+    "user_trainings": [
+        "user_id",
+        "training_id",
+        "solved_tasks_count",
+        "earned_points",
+        "type",
+        "state",
+        "submitted_answers_count",
+        "started_at",
+        "finished_at",
+        "attempts",
+        "mark",
+        "mark_saved_at",
+    ],
+    "user_answers": [
+        "user_id",
+        "task_id",
+        "attempts",
+        "solved",
+        "points",
+        "max_attempts",
+        "skipped",
+        "resource_type",
+        "resource_id",
+        "submitted_at",
+        "wk_partial_answer",
+        "async_check_status",
+    ],
+    "wk_users_courses_actions": [
+        "user_id",
+        "users_course_id",
+        "sourceable_id",
+        "action",
+        "created_at",
+        "updated_at",
+        "lesson_id",
+    ],
+    "wk_media_view_sessions": [
+        "resource_type",
+        "resource_id",
+        "viewer_id",
+        "segments_total",
+        "viewed_segments_count",
+        "started_at",
+        "kind",
+    ],
+    "user_access_histories": [
+        "users_course_id",
+        "access_started_at",
+        "access_expired_at",
+        "activator_class",
+    ],
+    "user_award_badges": [
+        "award_badge_id",
+        "user_id",
+        "created_at",
+    ],
+    "award_badges": [
+        "id",
+        "name",
+        "title",
+        "level",
+        "quota",
+        "special",
+    ],
+    "groups": [
+        "id",
+        "lesson_id",
+        "teacher_id",
+        "starts_at",
+        "duration",
+        "state",
+        "video_available",
+        "wk_actual_started_at",
+        "wk_actual_finished_at",
+        "wk_duration_actual",
+    ],
+    "homeworks": [
+        "id",
+        "resource_type",
+        "resource_id",
+        "homework_type",
+    ],
+    "homework_items": [
+        "id",
+        "homework_id",
+        "resource_type",
+        "resource_id",
+        "position",
+    ],
+    "stats__module_1": [
+        "user_id",
+        "Кружок",
+        "teacher_id",
+        "Дата зачисления",
+        "id параллели",
+        "Уровень",
+        "course_id",
+        "Просмотрел уроков",
+        "Просмотрено контента",
+        "Просмотрено 80% ур или видеоконт",
+        "Посетил урок в онлайне",
+        "Решено ИЗ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Балл ПА",
+        "Сдал ПА",
+        "Дата сдачи ПА (МСК)",
+        "Статус",
+    ],
+    "stats__module_2": [
+        "user_id",
+        "Кружок",
+        "teacher_id",
+        "course_id",
+        "id параллели",
+        "Уровень",
+        "Посмотрел уроков на 80%",
+        "Просмотрено контента (ед)",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Смотрел уроков",
+        "Посетил урок в онлайне",
+        "Решено ИЗ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Балл ПА",
+        "Сдал ПА",
+        "Дата сдачи ПА (МСК)",
+        "Пройдена рефлексия",
+        "Статус",
+    ],
+    "stats__module_3": [
+        "user_id",
+        "Кружок",
+        "teacher_id",
+        "course_id",
+        "id параллели",
+        "Посмотрел уроков на 80%",
+        "Смотрел уроков",
+        "Посетил урок в онлайне",
+        "Просмотрено контента (ед)",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Решено ИЗ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Балл ПА",
+        "Сдал ПА",
+        "Дата сдачи ПА (МСК)",
+        "Уровень",
+        "Пройдена рефлексия",
+    ],
+    "stats__module_4": [
+        "user_id",
+        "Кружок",
+        "teacher_id",
+        "course_id",
+        "id параллели",
+        "Посмотрел уроков на 80%",
+        "Смотрел уроков",
+        "Посетил урок в онлайне",
+        "Просмотрено контента (ед)",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Решено ИЗ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Сдал ПА",
+        "Уровень",
+        "Пройдена рефлексия",
+        "Сдал ИА",
+    ],
+}
+
+
+# =============================================================================
+# Column typing configuration
+# =============================================================================
+
+DATE_COLS = {
+    "users_courses": [
+        "created_at",
+        "updated_at",
+        "access_finished_at",
+        "wk_officially_started_at",
+        "wk_course_completed_at",
+    ],
+    "users": [
+        "created_at",
+        "updated_at",
+        "grade_changed_at",
+    ],
+    "lessons": ["wk_attendance_tracking_disabled_at"],
+    "trainings": ["published_at"],
+    "user_trainings": ["started_at", "finished_at", "mark_saved_at"],
+    "user_answers": ["submitted_at"],
+    "wk_users_courses_actions": ["created_at", "updated_at"],
+    "wk_media_view_sessions": ["started_at"],
+    "user_access_histories": ["access_started_at", "access_expired_at"],
+    "user_award_badges": ["created_at"],
+    "groups": ["starts_at", "wk_actual_started_at", "wk_actual_finished_at"],
+    "stats__module_1": ["Дата зачисления", "Дата сдачи ПА (МСК)"],
+    "stats__module_2": ["Дата сдачи ПА (МСК)"],
+    "stats__module_3": ["Дата сдачи ПА (МСК)"],
+    "stats__module_4": [],
+}
+
+ID_COLS_MAP = {
+    "users_courses": ["id", "user_id", "course_id"],
+    "users": ["id", "grade_id", "d_wk_school_id", "d_wk_municipal_id", "d_wk_region_id"],
+    "lessons": ["id", "course_id"],
+    "lesson_tasks": ["id", "lesson_id", "task_id", "position"],
+    "trainings": ["id", "lesson_id", "difficulty", "task_templates_count"],
+    "user_lessons": ["user_id", "lesson_id", "users_course_id", "solved_tasks_count", "wk_solved_task_count"],
+    "user_trainings": [
+        "user_id",
+        "training_id",
+        "solved_tasks_count",
+        "earned_points",
+        "submitted_answers_count",
+        "attempts",
+        "mark",
+    ],
+    "user_answers": ["user_id", "task_id", "attempts", "max_attempts", "resource_id"],
+    "wk_users_courses_actions": ["user_id", "users_course_id", "sourceable_id", "lesson_id"],
+    "wk_media_view_sessions": ["resource_id", "viewer_id", "segments_total", "viewed_segments_count"],
+    "user_access_histories": ["users_course_id"],
+    "user_award_badges": ["award_badge_id", "user_id"],
+    "award_badges": ["id", "level", "quota"],
+    "groups": ["id", "lesson_id", "teacher_id", "duration", "wk_duration_actual"],
+    "homeworks": ["id", "resource_id"],
+    "homework_items": ["id", "homework_id", "resource_id", "position"],
+    "stats__module_1": ["user_id", "teacher_id", "id параллели", "course_id"],
+    "stats__module_2": ["user_id", "teacher_id", "course_id", "id параллели"],
+    "stats__module_3": ["user_id", "teacher_id", "course_id", "id параллели"],
+    "stats__module_4": ["user_id", "teacher_id", "course_id", "id параллели"],
+}
+
+BOOL_COLS_MAP = {
+    "users": ["subscribed"],
+    "lessons": [
+        "conspect_expected",
+        "task_expected",
+        "wk_survival_training_expected",
+        "wk_scratch_playground_enabled",
+        "wk_attendance_tracking_enabled",
+    ],
+    "lesson_tasks": ["task_required"],
+    "user_lessons": ["video_visited", "translation_visited", "solved", "video_viewed"],
+    "user_answers": ["solved", "skipped", "wk_partial_answer"],
+    "award_badges": ["special"],
+    "groups": ["video_available"],
+}
+
+CATEGORY_COLS_MAP = {
+    "users_courses": ["state"],
+    "users": ["type", "timezone", "wk_gender"],
+    "user_trainings": ["type", "state"],
+    "user_answers": ["resource_type", "async_check_status"],
+    "wk_users_courses_actions": ["action"],
+    "wk_media_view_sessions": ["resource_type", "kind"],
+    "user_access_histories": ["activator_class"],
+    "award_badges": ["name", "title"],
+    "groups": ["state"],
+    "homeworks": ["resource_type", "homework_type"],
+    "homework_items": ["resource_type"],
+    "stats__module_1": [
+        "Кружок",
+        "Уровень",
+        "Просмотрено 80% ур или видеоконт",
+        "Посетил урок в онлайне",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Сдал ПА",
+        "Статус",
+    ],
+    "stats__module_2": [
+        "Кружок",
+        "Уровень",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Посетил урок в онлайне",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Сдал ПА",
+        "Пройдена рефлексия",
+        "Статус",
+    ],
+    "stats__module_3": [
+        "Кружок",
+        "Посетил урок в онлайне",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Сдал ПА",
+        "Уровень",
+        "Пройдена рефлексия",
+    ],
+    "stats__module_4": [
+        "Кружок",
+        "Посетил урок в онлайне",
+        "Просмотрено 720ед видеоконт и 80% ур ",
+        "Решены все обяз.ИЗ",
+        "Пройден тек.контроль",
+        "Сдал ПА",
+        "Уровень",
+        "Пройдена рефлексия",
+        "Сдал ИА",
+    ],
+}
+
+FLOAT_COLS_MAP = {
+    "users_courses": ["wk_points", "wk_max_points", "wk_max_viewable_lessons", "wk_max_task_count"],
+    "lessons": ["lesson_number", "wk_max_points", "wk_task_count", "wk_video_duration"],
+    "user_lessons": ["wk_points"],
+    "user_trainings": ["mark"],
+    "user_answers": ["points"],
+    "stats__module_1": [
+        "Просмотрел уроков",
+        "Просмотрено контента",
+        "Решено ИЗ",
+        "Балл ПА",
+    ],
+    "stats__module_2": [
+        "Посмотрел уроков на 80%",
+        "Просмотрено контента (ед)",
+        "Смотрел уроков",
+        "Решено ИЗ",
+        "Балл ПА",
+    ],
+    "stats__module_3": [
+        "Посмотрел уроков на 80%",
+        "Смотрел уроков",
+        "Просмотрено контента (ед)",
+        "Решено ИЗ",
+        "Балл ПА",
+    ],
+    "stats__module_4": [
+        "Посмотрел уроков на 80%",
+        "Смотрел уроков",
+        "Просмотрено контента (ед)",
+        "Решено ИЗ",
+    ],
+}
+
+
+# =============================================================================
+# Service columns and export names
+# =============================================================================
+
+DROP_COLS_MAP = {
+    "users": [],
+    "user_answers": [],
+}
+
+BLOCK_EXPORT_NAMES = {
+    "users_courses_base": "users_courses_base_AGENT",
+    "user_features": "user_features_AGENT",
+    "course_features": "course_features_AGENT",
+    "user_lessons": "user_lessons_agg_AGENT",
+    "user_trainings": "user_trainings_agg_AGENT",
+    "user_answers": "user_answers_agg_AGENT",
+    "course_actions": "course_actions_agg_AGENT",
+    "media": "media_sessions_agg_AGENT",
+    "access": "access_history_agg_AGENT",
+    "final_master": "final_user_course_features_AGENT",
+}

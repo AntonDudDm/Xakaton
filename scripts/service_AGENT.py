@@ -19,6 +19,7 @@ from .config_AGENT import (
     FLOAT_COLS_MAP,
     ID_COLS_MAP,
     RAW_USECOLS_MAP,
+    STATS_COLUMN_RENAME_MAP,
     SUMMARIES_DIR,
     TABLES_DIR,
 )
@@ -151,12 +152,13 @@ def read_raw_table(table_name: str) -> pd.DataFrame:
         low_memory=False,
     )
 
-    # Для stats__module_* сохраняем исходные русские названия столбцов
-    if not table_name.startswith("stats__module_"):
+    if table_name in STATS_COLUMN_RENAME_MAP:
+        df = df.rename(columns=STATS_COLUMN_RENAME_MAP[table_name])
+        df = standardize_columns(df)
+    else:
         df = standardize_columns(df)
 
     df = _apply_table_typing(table_name, df)
-
     return df
 
 

@@ -5,6 +5,7 @@ from .agg_feat_engineering_AGENT import (
     build_course_action_features,
     build_course_structure_features,
     build_media_features,
+    build_stats_module_features,
     build_time_window_features,
     build_user_answer_features,
     build_user_lesson_features,

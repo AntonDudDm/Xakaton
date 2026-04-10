@@ -40,6 +40,7 @@ def assemble_master_user_course_table(
     course_action_features: pd.DataFrame,
     media_features: pd.DataFrame,
     access_history_features: pd.DataFrame,
+    stats_features: pd.DataFrame | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Assemble the final master table with metric-based merge diagnostics."""
     merged = users_courses_base.copy()
@@ -55,6 +56,9 @@ def assemble_master_user_course_table(
         ("media_features", media_features, CORE_ENTITY_KEY),
         ("access_history_features", access_history_features, CORE_ENTITY_KEY),
     ]
+
+    if stats_features is not None:
+        merge_steps.append(("stats_module_features", stats_features, CORE_ENTITY_KEY))
 
     for block_name, block_df, join_key in merge_steps:
         merged, diagnostics = merge_feature_block(

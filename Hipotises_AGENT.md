@@ -311,3 +311,60 @@ The design is cleaner and safer than building cross-block time deltas before ali
 
 Impact:
 The pipeline computes time-window features as a dedicated second-stage block after assembly.
+
+---
+
+## H-12. `stats__module_1` to `stats__module_3` can enrich the flat user-course table through `(user_id, course_id)`
+
+Status: CONFIRMED
+
+Statement:
+The first three module-report tables can be aligned to the pupil user-course base through:
+`stats__module_*.(user_id, course_id) -> users_courses.(user_id, course_id) -> users_course_id`.
+
+Why it matters:
+These tables already contain curated module-level progress and assessment signals. If the bridge is valid, they should enrich the exploratory flat table instead of staying outside the pipeline.
+
+Tables used:
+- `stats__module_1`
+- `stats__module_2`
+- `stats__module_3`
+- `users_courses`
+
+Validation:
+- `(user_id, course_id)` key checks
+- duplicate-pair checks
+- match-rate checks to the pupil-only `users_courses_base`
+- post-aggregation uniqueness checks on `users_course_id`
+
+Result:
+`stats__module_1` resolves `98.1294%` of rows, while `stats__module_2` and `stats__module_3` resolve `100%` of rows to `users_course_id`. Module 1 contains duplicate `(user_id, course_id)` rows, but they can be safely collapsed with conservative aggregation.
+
+Impact:
+The pipeline adds a dedicated `stats_module_features_AGENT` block with `stats_m1_*`, `stats_m2_*`, and `stats_m3_*` features merged by `users_course_id`.
+
+---
+
+## H-13. `stats__module_4` should remain diagnostic-only until a reliable user-course bridge is found
+
+Status: FAILED
+
+Statement:
+`stats__module_4` should not be merged into the flat master table unless its `(user_id, course_id)` pairs can be matched reliably to the current pupil user-course base.
+
+Why it matters:
+Adding unresolved module rows would either create false joins or force unsupported assumptions about course identity.
+
+Tables used:
+- `stats__module_4`
+- `users_courses`
+
+Validation:
+- direct `(user_id, course_id)` overlap check against the pupil-only `users_courses_base`
+- coverage review of the candidate bridge
+
+Result:
+The current bridge coverage is `0%`: none of the observed `(user_id, course_id)` rows in `stats__module_4` map to the current pupil-only `users_courses_base`.
+
+Impact:
+`stats__module_4` is kept in the raw audit and route diagnostics, but it is not merged into the current flat user-course table.

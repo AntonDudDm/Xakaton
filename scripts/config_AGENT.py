@@ -7,8 +7,9 @@
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW_DIR = PROJECT_ROOT / "data" / "raw"
-DATA_AGENT_DIR = PROJECT_ROOT / "data" / "AGENT"
-TABLES_DIR = DATA_AGENT_DIR / "tables"
+DATA_AGENT_DIR = PROJECT_ROOT / "data" / "preprocessing"
+TABLES_DIR = DATA_AGENT_DIR
+#TABLES_DIR = DATA_AGENT_DIR / "tables"
 SUMMARIES_DIR = DATA_AGENT_DIR / "summaries"
 FIGURES_DIR = DATA_AGENT_DIR / "figures"
 NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"

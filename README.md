@@ -231,14 +231,9 @@ Xakaton/
 │    
 │
 ├── notebooks/
-    ├── EDA_structured_test # тестовое структурирование - пока что мусор
+│   ├── EDA_structured_test # тестовое структурирование - пока что мусор
 │   └── EDA.ipynb         # основной exploratory notebook
 │
-│
-├── reports/
-│   ├── schema_audit.md
-│   ├── eda_report.md
-│   └── model_report.md
 │
 ├── README.md
 ├── AGENTS.md

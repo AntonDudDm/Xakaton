@@ -24,9 +24,28 @@ from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
+import os
+import sys
+
+def resolve_project_root() -> Path:
+    current = Path.cwd().resolve()
+    for candidate in [current, *current.parents]:
+        if (candidate / "scripts").exists() and (candidate / "data").exists():
+            return candidate
+    raise FileNotFoundError("Project root with scripts/ and data/ was not found.")
+
+
+PROJECT_ROOT = resolve_project_root()
+os.environ["PYTHONIOENCODING"] = "utf-8"
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.config_AGENT import TABLES_DIR, PROJECT_ROOT
+
 # ── Пути ──────────────────────────────────────────────────────────────────
-DATA_DIR   = Path("data")
-OUTPUT_DIR = Path("eda_output")
+DATA_DIR   = TABLES_DIR
+OUTPUT_DIR = PROJECT_ROOT / "data" / "eda_output"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 df       = pl.read_parquet(DATA_DIR / "df_train.parquet")

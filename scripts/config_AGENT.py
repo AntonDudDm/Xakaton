@@ -474,15 +474,15 @@ DROP_COLS_MAP = {
 }
 
 BLOCK_EXPORT_NAMES = {
-    "users_courses_base": "users_courses_base_AGENT",
-    "user_features": "user_features_AGENT",
-    "course_features": "course_features_AGENT",
-    "user_lessons": "user_lessons_agg_AGENT",
-    "user_trainings": "user_trainings_agg_AGENT",
-    "user_answers": "user_answers_agg_AGENT",
-    "course_actions": "course_actions_agg_AGENT",
-    "media": "media_sessions_agg_AGENT",
-    "access": "access_history_agg_AGENT",
-    "stats": "stats_module_features_AGENT",
-    "final_master": "final_user_course_features_AGENT",
+    "users_courses_base": "users_courses_base",
+    "user_features": "user_features",
+    "course_features": "course_features",
+    "user_lessons": "user_lessons_agg",
+    "user_trainings": "user_trainings_agg",
+    "user_answers": "user_answers_agg",
+    "course_actions": "course_actions_agg",
+    "media": "media_sessions_agg",
+    "access": "access_history_agg",
+    "stats": "stats_module_features",
+    "final_master": "final_user_course_features",
 }

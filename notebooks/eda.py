@@ -59,6 +59,9 @@ print(f"df_infer : {df_infer.shape}")
 # SAFE_HIST = [c for c in df.columns
 #              if c.startswith("hist_m1_") or c.startswith("hist_m2_")]
 
+print(df.sample(5))
+print(df.columns)
+
 FINAL_FEATURES = [c for c in [
     "time_training_intensity_per_observed_day",   # действий/день
     "time_media_intensity_per_observed_day",       # медиа/день
